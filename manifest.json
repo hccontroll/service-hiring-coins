@@ -38,6 +38,13 @@
       }
     },
     {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "hccontroll03.app.br",
+        "path": "*"
+      }
+    },
+    {
       "name": "ADMIN_DS"
     },
     {

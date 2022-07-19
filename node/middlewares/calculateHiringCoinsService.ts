@@ -1,18 +1,17 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable spaced-comment */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 /* eslint-disable prefer-destructuring */
-/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+/* eslint-disable import/order */
 import { json } from 'co-body'
+import { Transaction } from '../clients/hiringCoinsApi'
 
 export async function calculateHiringCoinsService(
   ctx: Context,
   next: () => Promise<any>
 ) {
   const {
-    clients: { orderApi, externalMasterData },
+    clients: { orderApi, externalMasterData, hiringCoinsApi },
   } = ctx
 
   const body = await json(ctx.req)
@@ -31,19 +30,24 @@ export async function calculateHiringCoinsService(
 
   const name = `${orderData.clientProfileData.firstName} ${orderData.clientProfileData.lastName}`
 
+  const clientHiringCoins = await hiringCoinsApi.putClient(name, email);
+
   const totalItemsValue = getTotalItems(orderData)
 
   const purchaseDate = new Date(orderCreationDate).toISOString()
   const purchaseValue = getTotalOrder(orderData)
   const coins = convertToHiringCoins(totalItemsValue)
 
-  console.log(`Email: ${email}`)
-  console.log(`Name: ${name}`)
-  console.log(`Order Id: ${orderId}`)
-  console.log(`Purchase Date: ${purchaseDate}`)
-  console.log(`Purchase Value: ${purchaseValue}`)
-  console.log(`Items Value: ${totalItemsValue}`)
-  console.log(`Generated Coins: ${coins}`)
+  const transaction: Transaction = {
+    clientUuid: clientHiringCoins.uuid,
+    purchaseId: orderId,
+    purchaseValue,
+    purchaseDate,
+    type: 'CREDIT',
+    coins
+  }
+
+  await hiringCoinsApi.postTransaction(transaction);
 
   ctx.status = 200
 
