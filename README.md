@@ -10,6 +10,11 @@
 - [x] Enviar um PUT para a API na AWS para Salvar ou Atualizar o Cliente com o nome e e-mail
 - [x] Com o retorno da requisição anterior, enviar POST para a API na AWS com uma transação do tipo "Crédito" e UUID do Cliente, creditando no saldo de pontos do Cliente.
 
+## ⚙️ Executando
+- vtex login {sua conta}
+- vtex use {seu workspace}
+- vtex link
+
 ## 📋 Documentações Utilizadas:
 
 ## Hook Configuration:
